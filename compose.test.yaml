@@ -1,0 +1,25 @@
+services:
+  test-db:
+    image: postgres:18.0
+    environment:
+      POSTGRES_USER: skill_test
+      POSTGRES_DB: skill_inventory_test
+      POSTGRES_PASSWORD: test-only-password
+    tmpfs:
+      - /var/lib/postgresql
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U skill_test -d skill_inventory_test]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+  test:
+    build:
+      context: ./backend
+    environment:
+      TEST_DATABASE_URL: postgresql+psycopg://skill_test:test-only-password@test-db:5432/skill_inventory_test
+    depends_on:
+      test-db:
+        condition: service_healthy
+    volumes:
+      - ./backend/tests:/app/tests:ro
+    command: [sh, -c, "uv sync --frozen --group dev && uv run pytest -q"]

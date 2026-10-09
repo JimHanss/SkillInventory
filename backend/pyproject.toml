@@ -1,0 +1,38 @@
+[project]
+name = "skill-inventory"
+version = "0.1.0"
+description = "Internal Skill Inventory API"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn>=0.34,<1",
+  "sqlalchemy>=2.0,<3",
+  "psycopg[binary]>=3.2,<4",
+  "alembic>=1.14,<2",
+]
+
+[dependency-groups]
+build = [
+    "editables==0.6",
+    "hatchling==1.32.4",
+    "uv==0.12.24",
+]
+dev = ["pytest>=8,<10", "httpx>=0.28,<1", "ruff>=0.9,<1"]
+
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+default-groups = ["dev", "build"]
+no-build-isolation-package = ["skill-inventory"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
